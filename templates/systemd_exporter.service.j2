@@ -1,7 +1,7 @@
 {{ ansible_managed | comment }}
 [Unit]
 Description=Prometheus Systemd Exporter
-Dokumentation=https://github.com/povilasv/systemd_exporter
+Documentation=https://github.com/povilasv/systemd_exporter
 After=network-online.target
 StartLimitInterval=0
 
@@ -37,9 +37,16 @@ ExecStart={{ systemd_exporter_binary_install_dir }}/systemd_exporter \
 {% endif %}
   --web.disable-exporter-metrics
 KillMode=process
-SyslogIdentifier=systemd_exporter
-Restart=on-failure
-RestartSec=3
+SyslogIdentifier=node_exporter
+Restart=always
+RestartSec=30
+PrivateTmp=yes
+{% for m in ansible_mounts if m.mount == '/home' %}
+ProtectHome=read-only
+{% else %}
+ProtectHome=yes
+{% endfor %}
+NoNewPrivileges=yes
 
 [Install]
 WantedBy=multi-user.target
