@@ -163,6 +163,7 @@
   retries: 5
   delay: 2
   when:
+    - ansible_os_family == 'RedHat'
     - ansible_version.full is version_compare('2.4', '>=')
     - ansible_selinux.status == "enabled"
   become: true
@@ -175,6 +176,7 @@
     setype: http_port_t
     state: present
   when:
+    - ansible_os_family == 'RedHat'
     - ansible_version.full is version_compare('2.4', '>=')
     - ansible_selinux.status == "enabled"
   become: true
@@ -185,7 +187,9 @@
     port: "{{ systemd_exporter_web_listen_port }}/tcp"
     permanent: yes
     state: true
-  when: systemd_exporter_firewalld_state == "enabled"
+  when: 
+    - ansible_os_family == 'RedHat'
+    - systemd_exporter_firewalld_state == "enabled"
   register: "_firewalld_systemd_exporter_state"
   become: true
   tags: systemd_exporter
@@ -194,7 +198,9 @@
   service:
     name: firewalld
     state: reloaded
-  when: _firewalld_systemd_exporter_state['changed']
+  when: 
+    - ansible_os_family == 'RedHat'
+    - _firewalld_systemd_exporter_state['changed']
   become: true
   tags: systemd_exporter
 
