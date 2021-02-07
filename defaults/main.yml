@@ -7,7 +7,7 @@ systemd_exporter_log_level: warn
 systemd_exporter_log_format: "logger:stdout?json=true"
 systemd_exporter_firewalld_state: "disabled"
 systemd_exporter_binary_install_dir: '/usr/local/bin'
-systemd_exporter_create_consul_agent_service: true
+systemd_exporter_create_consul_agent_service: false
 systemd_exporter_system_user: "{{ prometheus_user | default('prometheus') }}"
 systemd_exporter_system_group: "{{ prometheus_group | default('prometheus') }}"
 systemd_exporter_user_additional_groups: "adm"
