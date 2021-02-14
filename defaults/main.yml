@@ -19,5 +19,5 @@ systemd_exporter_ccollector_enable_ip_accounting: false
 systemd_exporter_collector_unit_whitelist: '.+'
 systemd_exporter_collector_unit_blacklist: '.+\\.(device)'
 # Example
-#systemd_exporter_collector_unit_whitelist: '(NetworkManager|apparmor|containerd|docker|fail2ban|logrotate|networking|node_exporter|rclone.+|rsyslog|ssh|systemd-(journald|networkd|logind|timesyncd)|systemd_exporter|ufw)\.service'
+#systemd_exporter_collector_unit_whitelist: '(NetworkManager|apparmor|containerd|docker|fail2ban|logrotate|networking|node_exporter|rclone.+|rsyslog|ssh|systemd-(journald|networkd|logind|timesyncd)|systemd_exporter|ufw|textfile-collector-.+)\.service'
 #systemd_exporter_collector_unit_blacklist: '.+\.(device|mount|socket|timer)'
