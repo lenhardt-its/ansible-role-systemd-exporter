@@ -37,7 +37,7 @@ ExecStart={{ systemd_exporter_binary_install_dir }}/systemd_exporter \
 {% endif %}
   --web.disable-exporter-metrics
 KillMode=process
-SyslogIdentifier=node_exporter
+SyslogIdentifier=systemd_exporter
 Restart=always
 RestartSec=30
 PrivateTmp=yes
