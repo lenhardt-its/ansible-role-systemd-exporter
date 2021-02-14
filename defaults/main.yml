@@ -11,10 +11,13 @@ systemd_exporter_create_consul_agent_service: false
 systemd_exporter_system_user: "{{ prometheus_user | default('prometheus') }}"
 systemd_exporter_system_group: "{{ prometheus_group | default('prometheus') }}"
 systemd_exporter_user_additional_groups: "adm"
-systemd_exporter_collector_unit_whitelist: ".+"
-systemd_exporter_collector_unit_blacklist: ".+\\.(device)"
 systemd_exporter_collector_private: false
 systemd_exporter_ccollector_user: false
 systemd_exporter_ccollector_enable_restart_count: false
 systemd_exporter_ccollector_enable_file_descriptor_size: false
 systemd_exporter_ccollector_enable_ip_accounting: false
+systemd_exporter_collector_unit_whitelist: ".+"
+systemd_exporter_collector_unit_blacklist: ".+\\.(device)"
+# Example
+#systemd_exporter_collector_unit_whitelist: "(NetworkManager|apparmor|containerd|docker|fail2ban|logrotate|networking|node_exporter|rclone.+|rsyslog|ssh|systemd-(journald|networkd    |logind|timesyncd)|systemd_exporter|ufw)\.service"
+#systemd_exporter_collector_unit_blacklist: ".+\.(device|mount|socket|timer)"
