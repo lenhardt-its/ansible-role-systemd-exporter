@@ -14,10 +14,3 @@
     state: restarted
   become: true
   tags: systemd_exporter
-
-- name: reload consul
-  systemd:
-    name: consul
-    state: reloaded
-  become: true
-  tags: systemd_exporter
