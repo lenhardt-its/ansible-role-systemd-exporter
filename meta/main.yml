@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  role_name: systemd-exporter
+  role_name: systemd_exporter
   author: Dominik Lenhardt
   description: Installing and configure Systemd-Exporter
   license: "MIT"
