@@ -25,4 +25,5 @@ galaxy_info:
   - prometheus
   - exporter
   - systemd
+  - systemd_exporter
 dependencies: []
