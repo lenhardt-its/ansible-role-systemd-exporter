@@ -158,6 +158,7 @@
     capability: CAP_NET_BIND_SERVICE+ep
     state: present
   when: systemd_exporter_web_listen_port <= 1024
+  tags: systemd_exporter
 
 - name: copy systemd_exporter alert rules files
   copy:
@@ -217,22 +218,10 @@
   notify: reload ufw
   become: true
   tags: systemd_exporter
-  register: "_firewalld_systemd_exporter_state"
   when:
     - "'active' in _ufw_status.stdout"
     - ansible_os_family == 'Debian'
     - systemd_exporter_allow_firewall
-
-- name: reload ufw
-  systemd:
-    name: ufw
-    state: reloaded
-  when:
-    - _firewalld_systemd_exporter_state['changed']
-    - ansible_os_family == 'Debian'
-    - systemd_exporter_allow_firewall
-  become: true
-  tags: systemd_exporter
 
 - name: configure firewalld
   firewalld:
@@ -242,18 +231,7 @@
   when:
     - systemd_exporter_allow_firewall
     - ansible_os_family == 'RedHat'
-  register: "_firewalld_systemd_exporter_state"
-  become: true
-  tags: systemd_exporter
-
-- name: reload firewalld
-  systemd:
-    name: firewalld
-    state: reloaded
-  when:
-    - systemd_exporter_allow_firewall
-    - _firewalld_systemd_exporter_state['changed']
-    - - ansible_os_family == 'RedHat'
+  notify: reload firewalld
   become: true
   tags: systemd_exporter
 

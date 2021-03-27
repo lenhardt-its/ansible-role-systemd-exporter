@@ -1,7 +1,6 @@
 ---
 - name: reload systemd_exporter
   systemd:
-    daemon_reload: true
     name: systemd_exporter
     state: reloaded
   become: true
@@ -14,3 +13,17 @@
     state: restarted
   become: true
   tags: systemd_exporter
+
+- name: reload ufw
+  systemd:
+    name: ufw
+    state: reloaded
+  tags: systemd_exporter
+  become: true
+
+- name: reload firewalld
+  systemd:
+    name: firewalld
+    state: reloaded
+  tags: systemd_exporter
+  become: true
