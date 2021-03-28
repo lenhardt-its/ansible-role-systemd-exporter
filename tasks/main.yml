@@ -223,7 +223,9 @@
     port: "{{ systemd_exporter_web_listen_port }}"
     proto: tcp
     state: enabled
-    comment: "systemd_exporter"
+    comment: "Systemd Exporter"
+  changed_when: False
+  ignore_errors: True
   notify: reload ufw
   become: true
   tags: systemd_exporter
@@ -237,6 +239,8 @@
     port: "{{ systemd_exporter_web_listen_port }}/tcp"
     permanent: yes
     state: true
+  changed_when: False
+  ignore_errors: True
   when:
     - "'running' in _firewalld_status.stdout"
     - systemd_exporter_allow_firewall
