@@ -127,7 +127,7 @@
     notify: restart systemd_exporter
     become: true
     tags: systemd_exporter
-  when: (not __systemd_exporter_is_installed.stat.exists) or (__systemd_exporter_current_version_output.stderr_lines[0].split(" ")[2] != systemd_exporter_version)
+  when: (not __systemd_exporter_is_installed.stat.exists) or (__systemd_exporter_current_version_output.stdout.split(" ")[2] != systemd_exporter_version)
 
 - name: copy consul-agent service json
   template:
