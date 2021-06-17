@@ -160,20 +160,6 @@
   when: systemd_exporter_web_listen_port <= 1024
   tags: systemd_exporter
 
-- name: copy systemd_exporter alert rules files
-  copy:
-    src: "{{ item }}"
-    dest: "{{ systemd_exporter_config_dir }}/rules/{{ item }}"
-    mode: 0644
-    owner: "{{ systemd_exporter_system_user }}"
-    group: "{{ systemd_exporter_system_group }}"
-  with_items: "{{ systemd_exporter_alertrules_files }}"
-  notify: reload systemd_exporter
-  become: true
-  tags: 
-    - systemd_exporter
-    - systemd_exporter_alertfiles
-
 - name: create systemd service unit
   template:
     src: systemd_exporter.service.j2
