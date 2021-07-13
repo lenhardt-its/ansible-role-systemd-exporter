@@ -19,7 +19,6 @@ Deploy and manage systemd-exporter [Systemd exporter](https://github.com/povilas
 ## Requirements
 
 - Ansible >= 2.9 (It might work on previous versions, but we cannot guarantee it)
-- Community Packages: `ansible-galaxy collection install community.general`
 
 ## Role Variables
 
@@ -33,7 +32,6 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `systemd_exporter_web_listen_port` | 9558 | Set exporter listen-port |
 | `systemd_exporter_log_level` | warn | Loglevel for the exporter |
 | `systemd_exporter_log_format` | json | Logformat for the exporter |
-| `systemd_exporter_allow_firewall` | false | Enabled/Disabled Firewalld and open the port |
 | `systemd_exporter_binary_local_dir` | /usr/local/bin | Binary Path |
 | `systemd_exporter_create_consul_agent_service` | true | Add consul agent config snipped |
 | `systemd_exporter_system_user` | prometheus | Set exporters system user |

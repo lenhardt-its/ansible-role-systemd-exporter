@@ -1,17 +1,4 @@
 ---
-- name: gather operating system variables
-  include_vars: "{{ item }}"
-  with_first_found:
-    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
-    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
-    - "{{ ansible_distribution_file_variety | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
-    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
-    - "{{ ansible_distribution | lower }}.yml"
-    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
-    - "{{ ansible_os_family | lower }}.yml"
-  become: true
-  tags: systemd_exporter
-
 - name: create system group
   group:
     name: "{{ systemd_exporter_system_group }}"
@@ -34,14 +21,14 @@
   become: true
   tags: systemd_exporter
 
-- name: check if systemd_exporter is installed
+- name: check if is installed
   stat:
     path: "{{ systemd_exporter_binary_install_dir }}/systemd_exporter"
   register: __systemd_exporter_is_installed
   become: true
   tags: systemd_exporter
 
-- name: gather currently installed systemd_exporter version (if any)
+- name: gather currently installed version (if any)
   command: "{{ systemd_exporter_binary_install_dir }}/systemd_exporter --version"
   args:
     warn: false
@@ -129,37 +116,6 @@
     tags: systemd_exporter
   when: (not __systemd_exporter_is_installed.stat.exists) or (__systemd_exporter_current_version_output.stderr_lines[0].split(" ")[2] != systemd_exporter_version)
 
-- name: copy consul-agent service json
-  template:
-    src: consul_agent_service.json.j2
-    dest: /etc/consul/systemd_exporter.json
-    owner: consul
-    group: consul
-    mode: 0644
-  when: systemd_exporter_create_consul_agent_service
-  notify: reload consul
-  become: true
-  tags: systemd_exporter
-
-- name: copy systemd service unit
-  template:
-    src: systemd_exporter.service.j2
-    dest: /etc/systemd/system/systemd_exporter.service
-    owner: root
-    group: root
-    mode: 0644
-  notify: restart systemd_exporter
-  become: true
-  tags: systemd_exporter
-
-- name: enable capabilities to ports lower than port 1024
-  capabilities:
-    path: "{{ systemd_exporter_binary_install_dir }}/systemd_exporter"
-    capability: CAP_NET_BIND_SERVICE+ep
-    state: present
-  when: systemd_exporter_web_listen_port <= 1024
-  tags: systemd_exporter
-
 - name: create systemd service unit
   template:
     src: systemd_exporter.service.j2
@@ -168,70 +124,6 @@
     group: root
     mode: 0644
   notify: restart systemd_exporter
-  become: true
-  tags: systemd_exporter
-
-- name: allow binding to port in selinux
-  seport:
-    ports: "{{ systemd_exporter_web_listen_port }}"
-    proto: tcp
-    setype: http_port_t
-    state: present
-  when:
-    - ansible_version.full is version_compare('2.4', '>=')
-    - ansible_selinux.status == "enabled"
-  become: true
-  tags: systemd_exporter
-
-- name: check whether ufw status is active
-  command: "ufw status"
-  changed_when: False
-  ignore_errors: True
-  register: _ufw_status
-  become: true
-  when:
-    - systemd_exporter_allow_firewall
-    - ansible_os_family == 'Debian'
-  tags: systemd_exporter
-
-- name: check whether firewalld status is active
-  command: "firewall-cmd --state"
-  changed_when: False
-  ignore_errors: True
-  register: _firewalld_status
-  become: true
-  when: ansible_os_family == 'RedHat'
-  tags: systemd_exporter
-
-- name: configure ufw
-  community.general.ufw:
-    rule: allow
-    port: "{{ systemd_exporter_web_listen_port }}"
-    proto: tcp
-    state: enabled
-    comment: "Systemd Exporter"
-  changed_when: False
-  ignore_errors: True
-  notify: reload ufw
-  become: true
-  tags: systemd_exporter
-  when:
-    - "'active' in _ufw_status.stdout"
-    - ansible_os_family == 'Debian'
-    - systemd_exporter_allow_firewall
-
-- name: configure firewalld
-  firewalld:
-    port: "{{ systemd_exporter_web_listen_port }}/tcp"
-    permanent: yes
-    state: true
-  changed_when: False
-  ignore_errors: True
-  when:
-    - "'running' in _firewalld_status.stdout"
-    - systemd_exporter_allow_firewall
-    - ansible_os_family == 'RedHat'
-  notify: reload firewalld
   become: true
   tags: systemd_exporter
 
